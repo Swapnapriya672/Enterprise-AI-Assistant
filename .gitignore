@@ -3,3 +3,6 @@ venv/
 .env
 __pycache__/
 .ipynb_checkpoints/
+
+vector_store/
+*.sqlite3
