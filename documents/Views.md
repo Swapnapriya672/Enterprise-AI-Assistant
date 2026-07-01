@@ -1,0 +1,6 @@
+# Database Views
+
+vw_open_bugs
+vw_release_summary
+vw_active_developers
+vw_api_inventory
