@@ -5,7 +5,7 @@ from app.core.exceptions import SQLException
 
 class SQLValidator:
     """
-    Validates generated SQL before execution.
+    Cleans, validates and secures generated SQL.
     """
 
     BLOCKED_KEYWORDS = {
@@ -37,7 +37,13 @@ class SQLValidator:
 
         try:
 
-            # Remove markdown code blocks
+            if not sql:
+
+                raise SQLException(
+                    "Empty SQL generated."
+                )
+
+            # Remove markdown fences
 
             sql = re.sub(
                 r"```sql",
@@ -54,23 +60,60 @@ class SQLValidator:
 
             sql = sql.strip()
 
-            # Remove trailing semicolon
+            # Keep only the first SQL statement
 
-            sql = sql.rstrip(";")
+            match = re.search(
 
-            # Validate dangerous SQL
+                r"SELECT[\s\S]*?;",
+
+                sql,
+
+                flags=re.IGNORECASE
+
+            )
+
+            if match:
+
+                sql = match.group(0)
+
+            else:
+
+                lines = []
+
+                for line in sql.splitlines():
+
+                    line = line.strip()
+
+                    if not line:
+
+                        continue
+
+                    lines.append(line)
+
+                    if ";" in line:
+
+                        break
+
+                sql = " ".join(lines)
+
+            sql = sql.strip()
+
+            if not sql.endswith(";"):
+
+                sql += ";"
 
             sql_upper = sql.upper()
 
             for keyword in SQLValidator.BLOCKED_KEYWORDS:
 
-                if keyword in sql_upper:
+                if re.search(
+                    rf"\b{keyword}\b",
+                    sql_upper
+                ):
 
                     raise SQLException(
                         f"{keyword} statements are not allowed."
                     )
-
-            # Allow only SELECT statements
 
             if not sql_upper.startswith("SELECT"):
 

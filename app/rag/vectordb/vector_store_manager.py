@@ -51,7 +51,34 @@ class VectorStoreManager:
         k: int = 5
     ) -> list[Document]:
 
-        return self.vector_store.similarity_search(
-            query=query,
-            k=k
-        )
+        try:
+
+            return self.vector_store.similarity_search(
+                query=query,
+                k=k
+            )
+
+        except Exception as exception:
+
+            raise VectorStoreException(
+                "Similarity search failed."
+            ) from exception
+
+    def similarity_search_with_score(
+        self,
+        query: str,
+        k: int = 5
+    ) -> list[tuple[Document, float]]:
+
+        try:
+
+            return self.vector_store.similarity_search_with_score(
+                query=query,
+                k=k
+            )
+
+        except Exception as exception:
+
+            raise VectorStoreException(
+                "Similarity search with score failed."
+            ) from exception

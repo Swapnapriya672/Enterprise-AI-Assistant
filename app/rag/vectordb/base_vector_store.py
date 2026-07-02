@@ -5,7 +5,7 @@ from langchain_core.documents import Document
 
 class BaseVectorStore(ABC):
     """
-    Base class for vector stores.
+    Base class for all vector databases.
     """
 
     @abstractmethod
@@ -13,9 +13,6 @@ class BaseVectorStore(ABC):
         self,
         documents: list[Document]
     ) -> None:
-        """
-        Store documents in vector database.
-        """
         pass
 
     @abstractmethod
@@ -24,7 +21,12 @@ class BaseVectorStore(ABC):
         query: str,
         k: int = 5
     ) -> list[Document]:
-        """
-        Search similar documents.
-        """
+        pass
+
+    @abstractmethod
+    def similarity_search_with_score(
+        self,
+        query: str,
+        k: int = 5
+    ) -> list[tuple[Document, float]]:
         pass

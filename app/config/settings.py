@@ -19,7 +19,7 @@ OLLAMA_MODEL = "qwen2.5:1.5b"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 # LLM
-TEMPERATURE = 0.7
+TEMPERATURE = 0
 MAX_TOKENS = 2048
 
 # API

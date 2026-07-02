@@ -18,9 +18,10 @@ class ResponseFormatter(BaseResponse):
         try:
 
             return {
+                "status": "success",
                 "answer": answer.strip(),
                 "total_documents": len(documents),
-                "status": "success"
+                "citations": []
             }
 
         except Exception as exception:

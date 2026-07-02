@@ -1,16 +1,11 @@
 from langchain_core.documents import Document
 
-from app.core.exceptions import RetrieverException
+from app.core.exceptions import RetrievalException
 
-from app.rag.retriever.similarity_retriever import (
-    SimilarityRetriever,
+from app.rag.vectordb.vector_store_manager import (
+    VectorStoreManager,
 )
 
-from app.rag.retriever.retriever_metadata import (
-    RetrieverMetadataProcessor,
-)
-
-from app.config.settings import TOP_K
 
 class RetrieverManager:
     """
@@ -19,29 +14,42 @@ class RetrieverManager:
 
     def __init__(self):
 
-        self.retriever = SimilarityRetriever()
+        self.vector_store = VectorStoreManager()
 
     def retrieve(
         self,
         query: str,
-        k: int = TOP_K
+        k: int = 5
     ) -> list[Document]:
 
         try:
 
-            documents = self.retriever.retrieve(
+            return self.vector_store.similarity_search(
                 query=query,
                 k=k
             )
 
-            documents = RetrieverMetadataProcessor.process(
-                documents
-            )
+        except Exception as exception:
 
-            return documents
+            raise RetrievalException(
+                "Document retrieval failed."
+            ) from exception
+
+    def retrieve_with_scores(
+        self,
+        query: str,
+        k: int = 5
+    ) -> list[tuple[Document, float]]:
+
+        try:
+
+            return self.vector_store.similarity_search_with_score(
+                query=query,
+                k=k
+            )
 
         except Exception as exception:
 
-            raise RetrieverException(
-                "Failed to retrieve relevant documents."
+            raise RetrievalException(
+                "Document retrieval with scores failed."
             ) from exception

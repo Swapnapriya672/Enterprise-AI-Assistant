@@ -1,13 +1,9 @@
 from app.core.exceptions import SQLException
 
 from app.sql.schema_loader import SchemaLoader
-
 from app.sql.sql_generator import SQLGenerator
-
 from app.sql.sql_validator import SQLValidator
-
 from app.sql.sql_executor import SQLExecutor
-
 from app.sql.response_formatter import (
     SQLResponseFormatter,
 )
@@ -34,15 +30,11 @@ class SQLManager:
     ) -> dict:
 
         try:
-            
-            print("SQL Manager Started")
 
             schema = self.schema_loader.load_schema()
-            print(schema)
 
             sql = self.generator.generate_sql(
                 query=query,
-            
                 schema=schema
             )
 
@@ -61,7 +53,8 @@ class SQLManager:
         except Exception as exception:
 
             print("=" * 80)
-            print("Original Exception")
+            print("SQL Manager Failed")
+            print(type(exception))
             print(repr(exception))
             print("=" * 80)
 

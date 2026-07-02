@@ -1,62 +1,37 @@
-from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from app.core.exceptions import EmbeddingException
-from app.rag.embeddings.base_embedding import BaseEmbedding
 from app.config.settings import EMBEDDING_MODEL
 
+from app.core.exceptions import EmbeddingException
 
-class HuggingFaceEmbedding(BaseEmbedding):
+
+class HuggingFaceEmbedding:
     """
-    HuggingFace embedding model.
+    Singleton HuggingFace embedding model.
     """
 
-    MODEL_NAME = EMBEDDING_MODEL
+    _embedding_model = None
 
     def __init__(self):
 
-        self.embedding_model = HuggingFaceEmbeddings(
-            model_name=self.MODEL_NAME
-        )
-
-    def embed_documents(
-        self,
-        documents: list[Document]
-    ) -> list[list[float]]:
-
         try:
 
-            texts = [
+            if HuggingFaceEmbedding._embedding_model is None:
 
-                document.page_content
+                print("Loading Embedding Model...")
 
-                for document in documents
+                HuggingFaceEmbedding._embedding_model = (
+                    HuggingFaceEmbeddings(
+                        model_name=EMBEDDING_MODEL
+                    )
+                )
 
-            ]
-
-            return self.embedding_model.embed_documents(
-                texts
+            self.embedding_model = (
+                HuggingFaceEmbedding._embedding_model
             )
 
         except Exception as exception:
 
             raise EmbeddingException(
-                "Failed to generate document embeddings."
-            ) from exception
-
-    def embed_query(
-        self,
-        query: str
-    ) -> list[float]:
-
-        try:
-
-            return self.embedding_model.embed_query(
-                query
-            )
-
-        except Exception as exception:
-
-            raise EmbeddingException(
-                "Failed to generate query embedding."
+                "Failed to initialize embedding model."
             ) from exception

@@ -7,17 +7,41 @@ from app.config.settings import OLLAMA_MODEL
 
 class OllamaModel(BaseLLM):
     """
-    Ollama LLM implementation.
+    Singleton Ollama LLM implementation.
     """
+
+    _llm = None
 
     def __init__(
         self,
         model_name: str | None = None
     ):
 
-        self.llm = OllamaLLM(
-            model=model_name or OLLAMA_MODEL
-        )
+        try:
+
+            if OllamaModel._llm is None:
+
+                print("Loading Ollama Model...")
+
+                OllamaModel._llm = OllamaLLM(
+
+                    model=model_name or OLLAMA_MODEL,
+
+                    temperature=0,
+
+                    num_predict=128,
+                    
+                    keep_alive="30m"
+
+                )
+
+            self.llm = OllamaModel._llm
+
+        except Exception as exception:
+
+            raise LLMException(
+                "Failed to initialize Ollama model."
+            ) from exception
 
     def generate(
         self,
@@ -26,7 +50,9 @@ class OllamaModel(BaseLLM):
 
         try:
 
-            return self.llm.invoke(prompt)
+            return self.llm.invoke(
+                prompt
+            )
 
         except Exception as exception:
 

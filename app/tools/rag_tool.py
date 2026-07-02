@@ -1,30 +1,32 @@
-from app.agent.agent_manager import AgentManager
+from app.tools.base_tool import BaseTool
+
+from app.pipeline.query_pipeline import QueryPipeline
 
 from app.core.exceptions import PipelineException
 
 
-class PipelineManager:
+class RAGTool(BaseTool):
     """
-    Main Enterprise AI Pipeline.
+    Tool for enterprise document retrieval.
     """
 
     def __init__(self):
 
-        self.agent = AgentManager()
+        self.pipeline = QueryPipeline()
 
-    def query(
+    def run(
         self,
         query: str
     ) -> dict:
 
         try:
 
-            return self.agent.run(
+            return self.pipeline.run(
                 query=query
             )
 
         except Exception as exception:
 
             raise PipelineException(
-                "Pipeline execution failed."
+                "RAG Tool execution failed."
             ) from exception

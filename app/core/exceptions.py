@@ -32,10 +32,11 @@ class VectorStoreException(EnterpriseAIAssistantException):
     """
     pass
 
-class RetrieverException(EnterpriseAIAssistantException):
+class RetrievalException(Exception):
     """
     Raised when document retrieval fails.
     """
+
     pass
 
 class PromptException(EnterpriseAIAssistantException):

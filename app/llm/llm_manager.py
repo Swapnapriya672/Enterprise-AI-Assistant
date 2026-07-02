@@ -5,12 +5,28 @@ from app.llm.ollama_llm import OllamaModel
 
 class LLMManager:
     """
-    Main LLM pipeline.
+    Singleton LLM pipeline.
     """
+
+    _model = None
 
     def __init__(self):
 
-        self.model = OllamaModel()
+        try:
+
+            if LLMManager._model is None:
+
+                print("Loading LLM...")
+
+                LLMManager._model = OllamaModel()
+
+            self.model = LLMManager._model
+
+        except Exception as exception:
+
+            raise LLMException(
+                "Failed to initialize LLM."
+            ) from exception
 
     def generate(
         self,

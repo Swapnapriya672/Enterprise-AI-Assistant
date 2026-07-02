@@ -22,10 +22,6 @@ class SQLExecutor:
         try:
 
             with self.engine.connect() as connection:
-                print("=" * 80)
-                print("Executing SQL")
-                print(sql)
-                print("=" * 80)
 
                 result = connection.execute(
                     text(sql)
@@ -41,6 +37,11 @@ class SQLExecutor:
 
         except Exception as exception:
 
-            raise SQLException(
-                "Failed to execute SQL."
-            ) from exception
+
+            print("=" * 80)
+            print("SQL Execution Failed")
+            print(sql)
+            print(exception)
+            print("=" * 80)
+
+            raise

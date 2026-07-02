@@ -33,11 +33,6 @@ class SQLGenerator(BaseSQL):
                 prompt
             )
 
-            print("=" * 80)
-            print("Generated SQL")
-            print(sql)
-            print("=" * 80)
-
             return sql.strip()
 
         except Exception as exception:
